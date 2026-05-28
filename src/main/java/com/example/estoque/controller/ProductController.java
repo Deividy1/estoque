@@ -1,7 +1,9 @@
 package com.example.estoque.controller;
 
+import com.example.estoque.dto.ProductDTO;
 import com.example.estoque.model.document.Product;
 import com.example.estoque.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +19,25 @@ public class ProductController {
 
     // Busca todos os produtos e retorna uma lista
     @GetMapping("/{id}")
-    public Product findById(@PathVariable String id) {
-        return service.findById(id);
+    public ProductDTO findById(@PathVariable String id) {
+        return ProductDTO.fromProduct(service.findById(id));
     }
 
     @GetMapping // ← sem /{id}
-    public List<Product> findAll() {
-        return service.findAll();
+    public List<ProductDTO> findAll() {
+        return service.findAll().stream()
+                .map(ProductDTO::fromProduct)
+                .toList();
     }
 
     @PostMapping
-    public Product save(@RequestBody Product product) {
-        return service.save(product);
+    public ProductDTO save(@Valid @RequestBody Product product) {
+        return ProductDTO.fromProduct(service.save(product));
     }
 
     @DeleteMapping("/{id}")
-    public Product delete(@PathVariable String id) {
-        return service.delete(id);
+    public ProductDTO delete(@PathVariable String id) {
+        return ProductDTO.fromProduct(service.delete(id));
     }
 
 }

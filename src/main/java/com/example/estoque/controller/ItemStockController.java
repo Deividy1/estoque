@@ -1,5 +1,6 @@
 package com.example.estoque.controller;
 
+import com.example.estoque.dto.ItemStockDTO;
 import com.example.estoque.model.document.ItemStock;
 import com.example.estoque.service.ItemStockService;
 import lombok.AllArgsConstructor;
@@ -16,22 +17,24 @@ public class ItemStockController {
 
     // Busca todos os produtos e retorna uma lista
     @GetMapping("/{id}")
-    public ItemStock findById(@PathVariable String id) {
-        return service.findById(id);
+    public ItemStockDTO findById(@PathVariable String id) {
+        return ItemStockDTO.fromEntity(service.findById(id));
     }
 
     @GetMapping // ← sem /{id}
-    public List<ItemStock> findAll() {
-        return service.findAll();
+    public List<ItemStockDTO> findAll() {
+        return service.findAll().stream()
+                .map(ItemStockDTO::fromEntity)
+                .toList();
     }
 
     @PostMapping
-    public ItemStock save(@RequestBody ItemStock itemStock) {
-        return service.save(itemStock);
+    public ItemStockDTO save(@RequestBody ItemStock itemStock) {
+        return ItemStockDTO.fromEntity(service.save(itemStock));
     }
 
     @DeleteMapping("/{id}")
-    public ItemStock delete(@PathVariable String id) {
-        return service.delete(id);
+    public ItemStockDTO delete(@PathVariable String id) {
+        return ItemStockDTO.fromEntity(service.delete(id));
     }
 }
